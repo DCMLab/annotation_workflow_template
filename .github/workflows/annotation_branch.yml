@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run 'ms3 review' via dcml_corpus_workflow action
-        uses: DCMLab/dcml_corpus_workflow@v2.4.4 # Uses an action in the root directory
+        uses: DCMLab/dcml_corpus_workflow@v2.4.6 # Uses an action in the root directory
         id: act_docker
         # working-directory: ${{ github.repository.name }}
         # needs to become a parameter/env variable
@@ -61,7 +61,6 @@ jobs:
           pr_title: "${{ github.event.pull_request.title }}"
 
       - name: Cancel the run if skipped
-        working-directory: $GITHUB_WORKSPACE
         if: (steps.act_docker.outputs.skipped == 'true')
         run: |
            gh run cancel ${{ github.run_id }}
