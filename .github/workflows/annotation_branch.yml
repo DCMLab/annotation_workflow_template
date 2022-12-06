@@ -38,6 +38,7 @@ jobs:
 
       - name: Pull Request open or not?
         id: checkpull
+        working-directory: ${{ github.event.repository.name }}
         continue-on-error: true
         run: |
            gh pr view --json state -q .[]
