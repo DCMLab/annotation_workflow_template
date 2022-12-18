@@ -26,10 +26,7 @@ jobs:
           ms3-command: "push_to_main"
         env:
           Token: "${{ secrets.MS3_BOT_TOKEN }}"
-          IsThereAPullRequestOpened: ""
           commitFrom: "${{ github.event.before }}"
-          commitTo: ""
           comment_msg: ""
-          pr_title: ""
           directory: "${{ github.workspace }}"
           working_dir: ${{ github.event.repository.name }}
