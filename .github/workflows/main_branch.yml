@@ -20,8 +20,6 @@ jobs:
       - name: Run 'ms3 review' via dcml_corpus_workflow action
         uses: DCMLab/dcml_corpus_workflow@v2.5.6 # Uses an action in the root directory
         id: act_docker
-        # working-directory: ${{ github.repository.name }}
-        # needs to become a parameter/env variable
         with:
           ms3-command: "push_to_main"
         env:
