@@ -93,14 +93,14 @@ def write_md(md_str, md_path):
     print(f"{msg} {md_path}")
 
 def write_tsv(df, tsv_path):
-    if df.shape[0] > 0:
-        df.to_csv(tsv_path, sep='\t', index=False)
-        print(f"Concatenated metadata written to {tsv_path}.")
-    else:
-        print(f"No metadata found in the child directories of {directory}.")
+    df.to_csv(tsv_path, sep='\t', index=False)
+    print(f"Concatenated metadata written to {tsv_path}.")
+        
 
 def main(args):
-    concatenated = concat_metadata(args.dir)
+    if len(concatenated) == 0:
+        print(f"No metadata found in the child directories of {args.dir}.")
+        return
     tsv_path = os.path.join(args.out, 'concatenated_metadata.tsv')
     write_tsv(concatenated, tsv_path)
     md_str = metadata2markdown(concatenated)
