@@ -6,7 +6,9 @@ on:
       - main
 jobs:
   ms3_review:
-    if: (github.actor != 'ms3-bot' && github.event.pusher.name != 'github-actions[bot]')
+    if: >
+    github.event.head_commit.message == 'trigger_workflow'
+    || (github.actor != 'ms3-bot' && github.event.pusher.name != 'github-actions[bot]')
     runs-on: ubuntu-latest
     steps:
 
