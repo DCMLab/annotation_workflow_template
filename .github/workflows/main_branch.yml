@@ -6,7 +6,9 @@ on:
       - main
 jobs:
   ms3_review:
-    if: contains(${{ github.event.head_commit.message }}, 'dcml_corpus_workflow') || (github.actor != 'ms3-bot' && github.event.pusher.name != 'github-actions[bot]')
+    if: >
+      contains(${{ github.event.head_commit.message }}, 'update repo with dcml_corpus_workflow')
+      || (github.actor != 'ms3-bot' && github.event.pusher.name != 'github-actions[bot]')
     runs-on: ubuntu-latest
     steps:
 
