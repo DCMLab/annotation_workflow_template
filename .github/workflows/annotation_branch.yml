@@ -4,7 +4,6 @@ on:
   push:
     branches-ignore:
       - main
-  pull_request:
 
 
 jobs:
@@ -23,10 +22,10 @@ jobs:
           path: ${{ github.event.repository.name }}
 
       - name: Run 'ms3 review' via dcml_corpus_workflow action
-        uses: DCMLab/dcml_corpus_workflow@v2.5.6 # Uses an action in the root directory
+        uses: DCMLab/dcml_corpus_workflow@v2.5.7 # Uses an action in the root directory
         id: act_docker
         with:
-          ms3-command: ${{ github.event_name }}
+          ms3-command: "push"
         env:
           Token: "${{ secrets.MS3_BOT_TOKEN }}"
           commitFrom: "" # it start from main branch
