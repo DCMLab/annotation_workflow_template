@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
-import argparse, sys, os
+import argparse, os, warnings
+from typing import Union
 
 import pandas as pd
 from pytablewriter import MarkdownTableWriter
 
 from update_pages import resolve_dir
+
+BOOLEAN_COLUMNS = ['has_drumset']
 
 def check_and_create(d):
     """ Turn input into an existing, absolute directory path.
@@ -25,6 +28,14 @@ def check_dir(d):
             raise argparse.ArgumentTypeError(d + " needs to be an existing directory")
     return resolve_dir(d)
 
+def int2bool(s: str) -> Union[bool, str]:
+    if isinstance(s, str) and s.lower() in ('t', 'true', 'f', 'false'):
+        return s.lower() in ('t', 'true')
+    try:
+        return bool(int(s))
+    except Exception:
+        return s
+
 def concat_metadata(path):
     _, folders, _ = next(os.walk(path))
     tsv_paths, keys = [], []
@@ -35,7 +46,8 @@ def concat_metadata(path):
             keys.append(subdir)
     if len(tsv_paths) == 0:
         return pd.DataFrame()
-    dfs = [pd.read_csv(tsv_path, sep='\t', dtype='string') for tsv_path in tsv_paths]
+    converters = {col: int2bool for col in BOOLEAN_COLUMNS}
+    dfs = [pd.read_csv(tsv_path, sep='\t', dtype='string', converters=converters) for tsv_path in tsv_paths]
     try:
         concatenated = pd.concat(dfs, keys=keys)
     except AssertionError:
@@ -76,9 +88,9 @@ def metadata2markdown(concatenated):
         'harmony_version': 'standard',
     }
     concatenated = concatenated.rename(columns=rename4markdown)
-    result = '# Overview'
+    result = '## Overview'
     for corpus_name, df in concatenated[rename4markdown.values()].groupby(level=0):
-        heading = f"\n\n## {corpus_name}\n\n"
+        heading = f"\n\n### {corpus_name}\n\n"
         md = str(df2md(df.fillna('')))
         result += heading + md
     return result
@@ -103,7 +115,42 @@ def write_md(md_str, md_path):
         f.write(md_str)
     print(f"{msg} {md_path}")
 
+def convert_booleans(df,  bool_columns):
+    """"""
+    if df is None:
+        return df
+    boolean_columns = [c for c in bool_columns if c in df.columns]
+    if len(boolean_columns) == 0:
+        return df
+    df = df.copy()
+    for bc in boolean_columns:
+        null_vals = df[bc].isna()
+        if null_vals.all():
+            continue
+        with warnings.catch_warnings():
+            # Setting values in-place is fine, ignore the warning in Pandas >= 1.5.0
+            # This can be removed, if Pandas 1.5.0 does not need to be supported any longer.
+            # See also: https://stackoverflow.com/q/74057367/859591
+            warnings.filterwarnings(
+                "ignore",
+                category=FutureWarning,
+                message=(
+                    ".*will attempt to set the values inplace instead of always setting a new array. "
+                    "To retain the old behavior, use either.*"
+                ),
+            )
+            try:
+                df.loc[:, bc] = df[bc].astype('boolean').astype('Int64')
+            except TypeError:
+                print(f"COLUMN {bc!r}")
+                print([type(val) for val in df[bc]])
+                raise
+        print(f"Transformed booleans in the column {bc} to integers.")
+    return df
+
+
 def write_tsv(df, tsv_path):
+    df = convert_booleans(df, BOOLEAN_COLUMNS)
     df.to_csv(tsv_path, sep='\t', index=True)
     print(f"Concatenated metadata written to {tsv_path}.")
         
