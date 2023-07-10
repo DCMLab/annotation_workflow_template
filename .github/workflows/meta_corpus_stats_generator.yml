@@ -1,10 +1,10 @@
-name: meta_corpus_stats_generator
+name: update_submodules
 
 on:
   workflow_dispatch:
 
 jobs:
-  meta_corpus_stats_generator:
+  update_submodules:
     runs-on: ubuntu-latest
 
     steps:
