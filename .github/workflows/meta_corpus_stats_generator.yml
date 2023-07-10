@@ -32,8 +32,8 @@ jobs:
       - name: Gather metadata from submodules
         working-directory: ./main
         run: |
-          python -m pip install pandas pytablewriter
-          python .github/workflows/concat_metadata.py
+          python -m pip install ms3
+          ms3 transform -D
       - name: Push files
         working-directory: ./main
         continue-on-error: true
