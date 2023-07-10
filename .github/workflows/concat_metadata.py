@@ -56,7 +56,16 @@ def concat_metadata(path):
     if len(tsv_paths) == 0:
         return pd.DataFrame()
     converters = {col: int2bool for col in BOOLEAN_COLUMNS}
-    dfs = [pd.read_csv(tsv_path, sep='\t', dtype='string', converters=converters) for tsv_path in tsv_paths]
+    dfs = []
+    for tsv_path in tsv_paths:
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                df = pd.read_csv(tsv_path, sep='\t', dtype='string', converters=converters)
+        except Exception as e:
+            print(f"Reading {tsv_path} failed with {e}")
+            continue
+        dfs.append(df)
     try:
         concatenated = pd.concat(dfs, keys=keys)
     except AssertionError:
