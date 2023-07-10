@@ -6,9 +6,18 @@ from typing import Union
 import pandas as pd
 from pytablewriter import MarkdownTableWriter
 
-from update_pages import resolve_dir
 
 BOOLEAN_COLUMNS = ['has_drumset']
+
+def resolve_dir(d):
+    """ Resolves '~' to HOME directory and turns ``d`` into an absolute path.
+    """
+    if d is None:
+        return None
+    d = str(d)
+    if '~' in d:
+        return os.path.expanduser(d)
+    return os.path.abspath(d)
 
 def check_and_create(d):
     """ Turn input into an existing, absolute directory path.
