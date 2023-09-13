@@ -1,0 +1,68 @@
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout corpus repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.MS3_BOT_TOKEN }}
+      
+          # this step could be replaced with dcml_docker action
+      - name: "Get ms3 package & transform"
+        id: tag
+        continue-on-error: true
+        run: |
+            res=$(gh api -H "Accept: application/vnd.github+json" repos/${{ github.event.repository.full_name }}/releases/latest --jq '.tag_name')
+            echo "tag_version=${res}" >> $GITHUB_OUTPUT
+        env:
+            GITHUB_TOKEN: ${{ secrets.MS3_BOT_TOKEN }}
+
+      # this step could be replaced with dcml_docker action
+      - name: Setup Github credentials
+        run: |
+          git config --global user.name "ms3-bot"
+          git config --global user.email dcml.annotators@epfl.ch
+
+      - name: "Generate new tag version"
+        id: generate_tag
+        run: |
+            ls -a
+            python .github/workflows/helper.py --tag "${{ steps.tag.outputs.tag_version }}"
+            ls -a
+            cat .zenodo.json
+
+      # this step could be replaced with dcml_docker action
+      - name: "Get ms3 package & transform"
+        run: |
+            pip install --upgrade pip
+            pip install ms3
+            ls -a
+            ms3 transform -M -N -X -F -D
+            ls -a
+
+      - name: "Create release"
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.MS3_BOT_TOKEN }}"
+          automatic_release_tag: "${{ steps.generate_tag.outputs.new_tag }}"
+          prerelease: false
+          title: "${{ github.event.pull_request.title }}"
+          files: |
+            .zenodo.json
+            CITATION.cff
+            ${{ github.event.repository.name }}.zip
+            ${{ github.event.repository.name }}.datapackage.json
+            abc.datapackage.json.errors
+
+      - name: "Update release body"
+        run: |
+          gh release edit "${{ steps.generate_tag.outputs.new_tag }}" --notes "${{ github.event.pull_request.body }}" --repo "${{ github.event.repository.full_name }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.MS3_BOT_TOKEN }}     
