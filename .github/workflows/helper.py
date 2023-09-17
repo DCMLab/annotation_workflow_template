@@ -1,14 +1,13 @@
-import json
 import argparse
 import re
 import os
 def create_new_tag(tag):
-    if not (re.match(r'^v\d', tag)):
+    if not (re.match(r'^v\d+\.\d+$', tag)):
         raise Exception(f'tag: {tag} is not giving in the correct format e.i v0.0')
     
-    # Notice that this will make tag version of three digits become two digits
+    # Notice that this could make a tag version of three digits become two digits
     # e.i 3.2.1 -> 3.3
-    digits_tags = (re.match(r'^v\d+.\d+', tag)).group()[1::].split('.')
+    digits_tags = (re.match(r'^v\d+\.\d+', tag)).group()[1::].split('.')
     if len(digits_tags) != 2:
         raise Exception(f'tag: {tag} must contain two version digits')
     
@@ -19,33 +18,23 @@ def store_tag(tag):
     with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
         print(f'new_tag={tag}', file=fh)
 
-def update_files_with_tag(old_tag, new_tag):
-    # This function needs to take care of updating 
-    # .zenodo.json and CITATION.cff
-    # TO-DO: make zenodo.json robust to search for version tags
-    if os.path.isfile(".zenodo.json"):
+#TO-DO: decide between regex or replace with old tag
+#       if regex remove extra param old_tag
+#       if replace func then remove regex instruction 
+def update_file_with_tag(f_name, old_tag, new_tag):
+    if os.path.isfile(f_name):
         try:
-            with open(".zenodo.json", "r") as f:
-                data = json.load(f)
-
-            data["version"] = data["version"].replace(old_tag,new_tag)
-            data["title"] = data["title"].replace(old_tag,new_tag)
-
-            with open(".zenodo.json", "w") as f:
-                json.dump(data, f)
-            
+            with open(f_name, "r",encoding="utf-8") as f:
+                data = f.read()
+            # data = data.replace(old_tag, new_tag)
+            # data = re.sub(r'v\d+((\.\d+)+)', new_tag,data)
+            data = re.sub(r'v\d+\.(\d+\.\d+|\d+)', new_tag,data)
+            with open(f_name, "w",encoding="utf-8") as f:
+                f.write(data)
         except Exception as e:
             print(e)
-
-    if os.path.isfile("CITATION.cff"):
-        try:
-            with open("CITATION.cff", "r", encoding="utf-8") as file:
-                citation = file.read()
-            modified_citation = citation.replace(old_tag, new_tag)
-            with open("CITATION.cff", "w", encoding="utf-8") as file:
-                file.write(modified_citation)                
-        except Exception as e:
-            print(e)
+    else:
+        print(f"Warning: {f_name} doest exist at the current path {os.getcwd()}")
 
 def main(args):
     tag = args.tag
@@ -55,7 +44,8 @@ def main(args):
     else:
         new_tag = create_new_tag(tag)
         print(f"Repository with tag: {tag}, creating a new tag with: {new_tag}")
-        update_files_with_tag(tag,new_tag)
+        update_file_with_tag(".zenodo.json", tag, new_tag)
+        update_file_with_tag("CITATION.cff", tag, new_tag)
     store_tag(new_tag)
 
 def run():
