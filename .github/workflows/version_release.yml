@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.MS3_BOT_TOKEN }}
-
+          ref: "${{ github.event.pull_request.base.ref }}"
       - name: "Get ms3 package & transform"
         id: tag
         continue-on-error: true
@@ -37,7 +37,6 @@ jobs:
           git commit -m 'chore: zenodo and citation files updated with tag: ${{ steps.generate_tag.outputs.new_tag }}'
           git push
     
-      # TO-DO: decide whether results of ms3 transform needs to be pushed to repository
       - name: "Get ms3 package & apply transform"
         run: |
             pip install --upgrade pip

@@ -18,17 +18,12 @@ def store_tag(tag):
     with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
         print(f'new_tag={tag}', file=fh)
 
-#TO-DO: decide between regex or replace with old tag
-#       if regex remove extra param old_tag
-#       if replace func then remove regex instruction 
 def update_file_with_tag(f_name, old_tag, new_tag):
     if os.path.isfile(f_name):
         try:
             with open(f_name, "r",encoding="utf-8") as f:
                 data = f.read()
-            # data = data.replace(old_tag, new_tag)
-            # data = re.sub(r'v\d+((\.\d+)+)', new_tag,data)
-            data = re.sub(r'v\d+\.(\d+\.\d+|\d+)', new_tag,data)
+            data = data.replace(old_tag, new_tag)
             with open(f_name, "w",encoding="utf-8") as f:
                 f.write(data)
         except Exception as e:
