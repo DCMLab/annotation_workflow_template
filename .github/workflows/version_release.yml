@@ -28,13 +28,21 @@ jobs:
         run: |
             python .github/workflows/helper.py --tag "${{ steps.tag.outputs.tag_version }}"
 
-      - name: Setup Github credentials & push zenodo and citation changes
+      - name: Setup Github credentials & push zenodo, citation and README changes
         continue-on-error: true
         run: |
           git config --global user.name "ms3-bot"
           git config --global user.email dcml.annotators@epfl.ch
-          git add .zenodo.json CITATION.cff
-          git commit -m 'chore: zenodo and citation files updated with tag: ${{ steps.generate_tag.outputs.new_tag }}'
+          if [[ -f .zenodo.json ]]; then
+            git add .zenodo.json
+          fi
+          if [[ -f CITATION.cff ]]; then
+            git add CITATION.cff
+          fi
+          if [[ -f README.md ]]; then
+            git add README.md
+          fi          
+          git commit -m 'chore: files updated with tag: ${{ steps.generate_tag.outputs.new_tag }}'
           git push
     
       - name: "Get ms3 package & apply transform"

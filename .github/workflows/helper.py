@@ -24,6 +24,7 @@ def update_file_with_tag(f_name, old_tag, new_tag):
             with open(f_name, "r",encoding="utf-8") as f:
                 data = f.read()
             data = data.replace(old_tag, new_tag)
+
             with open(f_name, "w",encoding="utf-8") as f:
                 f.write(data)
         except Exception as e:
@@ -41,6 +42,7 @@ def main(args):
         print(f"Repository with tag: {tag}, creating a new tag with: {new_tag}")
         update_file_with_tag(".zenodo.json", tag, new_tag)
         update_file_with_tag("CITATION.cff", tag, new_tag)
+        update_file_with_tag("README.md", tag, new_tag)
     store_tag(new_tag)
 
 def run():
