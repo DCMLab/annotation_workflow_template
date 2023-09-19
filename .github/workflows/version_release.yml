@@ -12,21 +12,24 @@ jobs:
       - name: Checkout corpus repository
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           token: ${{ secrets.MS3_BOT_TOKEN }}
           ref: "${{ github.event.pull_request.base.ref }}"
-      - name: "Get ms3 package & transform"
+
+      - name: "Get latest tag version"
         id: tag
         continue-on-error: true
         run: |
-            res=$(gh api -H "Accept: application/vnd.github+json" repos/${{ github.event.repository.full_name }}/releases/latest --jq '.tag_name')
+            res=$(git tag -l --sort=-v:refname | grep --invert-match '\^' | head -n 1)
             echo "tag_version=${res}" >> $GITHUB_OUTPUT
         env:
             GITHUB_TOKEN: ${{ secrets.MS3_BOT_TOKEN }}
 
-      - name: "Generate new tag version"
+      - name: "Generate a new tag version"
         id: generate_tag
         run: |
-            python .github/workflows/helper.py --tag "${{ steps.tag.outputs.tag_version }}"
+            major_in_PR="${{ contains(github.event.pull_request.labels.*.name, 'major_version')}}"
+            python .github/workflows/helper.py --tag "${{ steps.tag.outputs.tag_version }}" --update_major_ver "$major_in_PR"
 
       - name: Setup Github credentials & push zenodo, citation and README changes
         continue-on-error: true
@@ -46,6 +49,7 @@ jobs:
           git push
     
       - name: "Get ms3 package & apply transform"
+        continue-on-error: true
         run: |
             pip install --upgrade pip
             pip install ms3
