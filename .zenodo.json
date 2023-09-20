@@ -6,8 +6,24 @@
             "orcid": "0000-0002-6329-7492",
             "type": "DataCollector",
             "name": "Amelia Brey"
+        },
+        {
+            "orcid": "0000-0002-6588-2257",
+            "type": "DataCollector",
+            "name": "Davor Krkljus"
+        },
+        {
+            "orcid": "0009-0005-5468-5871",
+            "type": "DataCollector",
+            "name": "Ehsan Mohagheghi Fard"
+        },
+        {
+            "orcid": "0000-0002-2105-525X",
+            "type": "DataCollector",
+            "name": "Hanné Becker"
         }
-    ],"title": "{{ pretty_repo_name }}",
+    ],
+    "title": "{{ pretty_repo_name }}",
     "keywords": [
         "music research",
         "music theory",
@@ -39,7 +55,7 @@
             "identifier": "epfl"
         }
     ],
-    "publication_date": "2023-05-23",
+    "publication_date": "2023-09-20",
     "creators": [
         {
             "orcid": "0000-0002-1986-9545",
