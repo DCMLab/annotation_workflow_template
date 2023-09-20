@@ -12,57 +12,56 @@ jobs:
       - name: Checkout corpus repository
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           token: ${{ secrets.MS3_BOT_TOKEN }}
-      
-          # this step could be replaced with dcml_docker action
-      - name: "Get ms3 package & transform"
+          ref: "${{ github.event.pull_request.base.ref }}"
+
+      - name: "Get latest tag version"
         id: tag
         continue-on-error: true
         run: |
-            res=$(gh api -H "Accept: application/vnd.github+json" repos/${{ github.event.repository.full_name }}/releases/latest --jq '.tag_name')
+            res=$(git tag -l --sort=-v:refname | grep --invert-match '\^' | head -n 1)
             echo "tag_version=${res}" >> $GITHUB_OUTPUT
         env:
             GITHUB_TOKEN: ${{ secrets.MS3_BOT_TOKEN }}
 
-      # this step could be replaced with dcml_docker action
-      - name: Setup Github credentials
+      - name: "Generate a new tag version"
+        id: generate_tag
+        run: |
+            major_in_PR="${{ contains(github.event.pull_request.labels.*.name, 'major_version')}}"
+            python .github/workflows/helper.py --tag "${{ steps.tag.outputs.tag_version }}" --update_major_ver "$major_in_PR"
+
+      - name: Setup Github credentials & push zenodo, citation and README changes
+        continue-on-error: true
         run: |
           git config --global user.name "ms3-bot"
           git config --global user.email dcml.annotators@epfl.ch
-
-      - name: "Generate new tag version"
-        id: generate_tag
-        run: |
-            ls -a
-            python .github/workflows/helper.py --tag "${{ steps.tag.outputs.tag_version }}"
-            ls -a
-            cat .zenodo.json
-
-      # this step could be replaced with dcml_docker action
-      - name: "Get ms3 package & transform"
+          if [[ -f .zenodo.json ]]; then
+            git add .zenodo.json
+          fi
+          if [[ -f CITATION.cff ]]; then
+            git add CITATION.cff
+          fi
+          if [[ -f README.md ]]; then
+            git add README.md
+          fi          
+          git commit -m 'chore: files updated with tag: ${{ steps.generate_tag.outputs.new_tag }}'
+          git push
+    
+      - name: "Get ms3 package & apply transform"
+        continue-on-error: true
         run: |
             pip install --upgrade pip
             pip install ms3
-            ls -a
             ms3 transform -M -N -X -F -D
-            ls -a
 
-      - name: "Create release"
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: ncipollo/release-action@v1
         with:
-          repo_token: "${{ secrets.MS3_BOT_TOKEN }}"
-          automatic_release_tag: "${{ steps.generate_tag.outputs.new_tag }}"
-          prerelease: false
-          title: "${{ github.event.pull_request.title }}"
-          files: |
-            .zenodo.json
-            CITATION.cff
-            ${{ github.event.repository.name }}.zip
-            ${{ github.event.repository.name }}.datapackage.json
-            abc.datapackage.json.errors
-
-      - name: "Update release body"
-        run: |
-          gh release edit "${{ steps.generate_tag.outputs.new_tag }}" --notes "${{ github.event.pull_request.body }}" --repo "${{ github.event.repository.full_name }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.MS3_BOT_TOKEN }}     
+          artifacts: "${{ github.event.repository.name }}.zip,\
+                      ${{ github.event.repository.name }}.datapackage.json,\
+                      ${{ github.event.repository.name }}.datapackage.errors"
+          body: "${{ github.event.pull_request.body }}"
+          name: "${{ github.event.pull_request.title }}"
+          tag: "${{ steps.generate_tag.outputs.new_tag }}"
+          makeLatest: "latest"
+          commit: "${{ github.event.pull_request.base.ref }}"
