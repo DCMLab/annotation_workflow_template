@@ -59,7 +59,7 @@ jobs:
         run: |
             pip install --upgrade pip
             pip install ms3
-            ms3 transform -M -N -X -F -D
+            ms3 transform -M -N -X -F -C -D
 
       - uses: ncipollo/release-action@v1
         with:
