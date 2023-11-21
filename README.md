@@ -21,6 +21,10 @@ For information on how to obtain and use the dataset, please refer to [this docu
 
 See the [GitHub releases](https://github.com/DCMLab/{{ repo_name }}/releases).
 
+## Questions, Suggestions, Corrections, Bug Reports
+
+Please [create an issue](https://github.com/DCMLab/{{ repo_name }}/issues) and/or feel free to fork and submit pull requests.
+
 ## License
 
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)).
