@@ -29,4 +29,6 @@ Please [create an issue](https://github.com/DCMLab/{{ repo_name }}/issues) and/o
 
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)).
 
+![cc-by-nc-sa-image](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
+
 ## File naming convention
