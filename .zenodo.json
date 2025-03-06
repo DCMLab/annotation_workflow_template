@@ -103,6 +103,12 @@
             "scheme": "url",
             "identifier": "https://dcmlab.github.io/{{ repo_name }}/",
             "relation": "isDocumentedBy"
+        },
+        {
+            "scheme": "doi",
+            "identifier": "doi.org/10.5281/zenodo.13844105",
+            "relation": "isPartOf",
+            "resource_type":"dataset"
         }
     ]
 }
