@@ -37,7 +37,7 @@
             "name": "Victor Zheng"
         }
     ],
-    "title": "{{ pretty_repo_name }}",
+    "title": "{{ pretty_repo_name }} (A corpus of annotated scores)",
     "keywords": [
         "music research",
         "music theory",
