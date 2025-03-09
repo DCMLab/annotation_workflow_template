@@ -66,7 +66,7 @@ to use this code to load any TSV files related to this repository (provided you'
 import ms3
 
 labels = ms3.load_tsv("{{ example_subcorpus }}harmonies/{{ example_fname }}.harmonies.tsv")
-notes = ms3.load_tsv("{{ example_subcorpus }}notes/{{ example_fname }}.notes.tsv"")
+notes = ms3.load_tsv("{{ example_subcorpus }}notes/{{ example_fname }}.notes.tsv")
 ```
 
 
