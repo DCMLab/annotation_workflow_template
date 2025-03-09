@@ -80,7 +80,7 @@ Please [create an issue](https://github.com/DCMLab/{{ repo_name }}/issues) and/o
 
 ## Cite as
 
-_Johannes Hentschel, Yannis Rammos, Markus Neuwirth, & Martin Rohrmeier. (2025). {{ pretty_repo_name }} [Data set]. Zenodo. https://doi.org/{{ concept_doi }}_
+> Hentschel, J., Rammos, Y., Neuwirth, M., Moss, F. C., & Rohrmeier, M. (2024). An annotated corpus of tonal piano music from the long 19th century. Empirical Musicology Review, 18(1), 84–95. https://doi.org/10.18061/emr.v18i1.8903
 
 ## License
 
