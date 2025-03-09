@@ -12,7 +12,7 @@ and serves as welcome page for both
 
 For information on how to obtain and use the dataset, please refer to [this documentation page](https://dcmlab.github.io/{{ repo_name }}/introduction).
 
-# {{ pretty_repo_name }}
+# {{ pretty_repo_name }} (A corpus of annotated scores)
 
 
 ## Getting the data
