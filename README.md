@@ -80,7 +80,7 @@ Please [create an issue](https://github.com/DCMLab/{{ repo_name }}/issues) and/o
 
 ## Cite as
 
-_Johannes Hentschel, Yannis Rammos, Markus Neuwirth, & Martin Rohrmeier. (2025). {{ pretty_repo_name }} [Data set]. Zenodo. https://doi.org/{{ concept_doi }}_
+> Johannes Hentschel, Yannis Rammos, Markus Neuwirth, & Martin Rohrmeier. (2025). {{ pretty_repo_name }} [Data set]. Zenodo. https://doi.org/{{ concept_doi }}
 
 ## License
 
