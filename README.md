@@ -1,7 +1,7 @@
 ![Version](https://img.shields.io/github/v/release/DCMLab/{{ repo_name }}?display_name=tag)
 [![DOI](https://zenodo.org/badge/{{ zenodo_badge_id }}.svg)](https://zenodo.org/badge/latestdoi/{{ zenodo_badge_id }})
 ![GitHub repo size](https://img.shields.io/github/repo-size/DCMLab/{{ repo_name }})
-![License](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-9cf)
+![License](https://img.shields.io/badge/license-CC%20BY%204.0-9cf)
 
 
 This is a README file for a data repository originating from the [DCML corpus initiative](https://github.com/DCMLab/dcml_corpora)
@@ -27,8 +27,8 @@ Please [create an issue](https://github.com/DCMLab/{{ repo_name }}/issues) and/o
 
 ## License
 
-Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)).
+Creative Commons Attribution 4.0 International License ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)).
 
-![cc-by-nc-sa-image](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
+![cc-by-image](https://licensebuttons.net/l/by/4.0/88x31.png)
 
 ## File naming convention
